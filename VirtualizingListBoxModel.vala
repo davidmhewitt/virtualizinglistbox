@@ -68,24 +68,25 @@ public class VirtualizingListBoxModel<T> : GLib.ListModel, GLib.Object {
 	    var items = new Gee.ArrayList<T> ();
         var start_found = false;
         var ignore_next_break = false;
-	    for (int i = 0; i < data.length; i++) {
-	        if ((data[i] == from || data[i] == to) && !start_found) {
+        var length = get_n_items ();
+	    for (int i = 0; i < length; i++) {
+	        var item = get_item (i);
+	        if ((item == from || item == to) && !start_found) {
 	            start_found = true;
 	            ignore_next_break = true;
 	        } else if (!start_found) {
 	            continue;
 	        }
 
-	        items.add (data[i]);
+	        items.add (item);
 
-	        if ((data[i] == to || data[i] == from) && !ignore_next_break) {
+	        if ((item == to || item == from) && !ignore_next_break) {
 	            break;
 	        }
 
 	        ignore_next_break = false;
 	    }
 
-        warning (items.size.to_string ());
 	    return items;
 	}
 
@@ -94,8 +95,9 @@ public class VirtualizingListBoxModel<T> : GLib.ListModel, GLib.Object {
 	        return -1;
 	    }
 
-	    for (int i = 0; i < data.length; i++) {
-	        if (item == data[i]) {
+        var length = get_n_items ();
+	    for (int i = 0; i < length; i++) {
+	        if (item == get_item (i)) {
 	            return i;
 	        }
 	    }
@@ -104,12 +106,13 @@ public class VirtualizingListBoxModel<T> : GLib.ListModel, GLib.Object {
 	}
 
 	public int get_index_of_item_before (T item) {
-	    if (item == data[0]) {
+	    if (item == get_item(0)) {
 	        return -1;
 	    }
 
-	    for (int i = 1; i < data.length; i++) {
-	        if (data[i] == item) {
+        var length = get_n_items ();
+	    for (int i = 1; i < length; i++) {
+	        if (get_item (i) == item) {
 	            return i - 1;
 	        }
 	    }
@@ -118,12 +121,13 @@ public class VirtualizingListBoxModel<T> : GLib.ListModel, GLib.Object {
 	}
 
 	public int get_index_of_item_after (T item) {
-	    if (item == data[data.length - 1]) {
+	    if (item == get_item (get_n_items () - 1)) {
 	        return -1;
 	    }
 
-	    for (int i = 0; i < data.length - 1; i++) {
-	        if (data[i] == item) {
+        var length = get_n_items ();
+	    for (int i = 0; i < length - 1; i++) {
+	        if (get_item (i) == item) {
 	            return i + 1;
 	        }
 	    }
